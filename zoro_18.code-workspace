@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "../vermeulen"
+		},
+		{
+			"path": "../udp_recorder_player"
+		},
+		{
+			"path": "."
+		}
+	],
+	"settings": {}
+}

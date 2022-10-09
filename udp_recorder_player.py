@@ -19,15 +19,15 @@ UDP_OUT_PORT = 6007
 
 # Set the debug level
 # 0 = no debug messages, 1 = INPUT, 2 = inverter messages, 3 = UDP, 4 = all
-DEBUG = 3
+DEBUG = 4
 
 
 # Set the to be loaded slots. 
 # Has to be full paths or else it won't start on boot! 
 if pi:
-    play_1 = "/home/kb/Desktop/vermeulen/SLOT_1.json"
-    play_2 = "/home/kb/Desktop/vermeulen/SLOT_2.json"
-    path_settings = "/home/kb/Desktop/vermeulen/settings.json"
+    play_1 = "/home/kb/Desktop/zoro/python/zoro_18/SLOT_1.json"
+    play_2 = "/home/kb/Desktop/zoro/python/zoro_18/SLOT_2.json"
+    path_settings = "/home/kb/Desktop/zoro/python/zoro_18/settings.json"
 else:
     play_1 = "SLOT_1.json"
     play_2 = "SLOT_2.json"
@@ -179,6 +179,7 @@ def interaction():
             stop_thread_slow = False
             try:
                 t_pir = threading.Thread(target = player, args=("t_pir", rec_dict_pir, last_time_pir, play_1)) 
+                t_pir.name = 'ud_recorder player'
                 t_pir.start()
             except:
                 print("Could not start composition. Exitting")
@@ -258,7 +259,7 @@ def network_udp():
                     print(decode_list[0],decode_list[1])                    # for debug purposes
                     y = []                                                  # the list that is used to store everything, empty or start it when this is called
                     if pi:
-                        loc_file = "/home/kb/Desktop/vermeulen/" + decode_list[1]
+                        loc_file = "/home/kb/Desktop/zoro/python/zoro_18/" + decode_list[1]
                     else:
                         loc_file = decode_list[1]
                     t0 = time.time()                                        # start the timer
@@ -314,6 +315,7 @@ def network_udp():
                         sock.sendto(bytes("STOPPED RECORDING", "utf-8"), (addr[0], UDP_OUT_PORT))
 try:
     network_udp_worker = threading.Thread(target=network_udp)
+    network_udp_worker.name = 'udp_recorder network'
     network_udp_worker.start()
 except:
     print (f"{datetime.datetime.now().time()}: Error: unable to start network_udp_worker thread. Exit.")
@@ -336,6 +338,7 @@ def pir_input():
 # start the pir sensor thread 
 try:
     pir_sensor_worker = threading.Thread(target=pir_input)
+    pir_sensor_worker.name = 'udp_recorder input'
     pir_sensor_worker.start()
 except:
     print (f"{datetime.datetime.now().time()}: Error: unable to start PIR SENSOR thread. Exit.")
@@ -394,6 +397,7 @@ while True:
         print("beginning play_mode")
         try:
             interaction_worker = threading.Thread(target=interaction)
+            interaction_worker.name = 'udp_record interaction'
             interaction_worker.start()
         except:
             print (f"{datetime.datetime.now().time()}: Error: unable to start INTERACTION thread. Exit.")
